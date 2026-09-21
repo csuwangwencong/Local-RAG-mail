@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8765:8765"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - LOCAL_LLM_BASE_URL=http://ollama:11434/v1
+      - LOCAL_LLM_MODEL=qwen2.5:7b-instruct
+      - LOCAL_LLM_MODELS=qwen2.5:7b-instruct,deepseek-r1:7b
+      - LOCAL_LLM_TIMEOUT_SECONDS=300
+      - LOCAL_EMBED_MODEL=bge-m3:latest
+      - LOCAL_EMBED_TIMEOUT_SECONDS=300
+    volumes:
+      - rag-data:/app/data/rag
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+      - ./scripts/ollama-entrypoint.sh:/ollama-entrypoint.sh:ro
+    entrypoint: ["/bin/sh", "/ollama-entrypoint.sh"]
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/ollama-ready"]
+      interval: 15s
+      timeout: 5s
+      retries: 60
+      start_period: 120s
+    restart: unless-stopped
+
+volumes:
+  rag-data:
+  ollama-models:
