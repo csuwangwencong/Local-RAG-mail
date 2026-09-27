@@ -34,6 +34,15 @@
   display: grid;
   grid-template-columns: 220px 380px minmax(480px, 1fr);
   background: #fff;
+  overflow: hidden;
+}
+
+.folder-pane,
+.message-list-pane,
+.reader-pane,
+.ai-list-pane,
+.ai-chat-pane {
+  min-height: 0;
 }
 
 .folder-pane {
