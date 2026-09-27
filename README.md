@@ -81,9 +81,9 @@ npm run dev
 项目已支持通过 `docker-compose.yml` 容器化部署。Compose 会同时启动应用服务和 Ollama 服务：
 
 - `app`：构建前端静态资源并启动 FastAPI，统一提供页面和 `/api` 接口。
-- `ollama`：启动本地模型服务，并通过 `scripts/ollama-entrypoint.sh` 自动拉取所需模型。
+- `ollama`：启动本地模型服务。首次启动后需手动拉取所需模型（见下方说明）。
 
-前置要求：已安装 [Docker Desktop](https://www.docker.com/products/docker-desktop/)（含 Docker Compose）。首次启动会下载模型，耗时取决于网络和磁盘速度。
+前置要求：已安装 [Docker Desktop](https://www.docker.com/products/docker-desktop/)（含 Docker Compose）。
 
 ```bash
 # 构建并前台启动
@@ -99,7 +99,13 @@ docker compose logs -f
 docker compose down
 ```
 
-启动后访问 `http://127.0.0.1:8765`。
+启动后，在另一个终端拉取所需模型（首次需要，模型会持久化在 volume 中）：
+
+```bash
+docker compose exec ollama ollama pull qwen2.5:7b-instruct deepseek-r1:7b bge-m3:latest
+```
+
+模型拉取完成后访问 `http://127.0.0.1:8765`。
 
 当前 Compose 配置：
 

@@ -26,14 +26,12 @@ services:
       - "11434:11434"
     volumes:
       - ollama-models:/root/.ollama
-      - ./scripts/ollama-entrypoint.sh:/ollama-entrypoint.sh:ro
-    entrypoint: ["/bin/sh", "/ollama-entrypoint.sh"]
     healthcheck:
-      test: ["CMD", "test", "-f", "/tmp/ollama-ready"]
-      interval: 15s
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
       timeout: 5s
-      retries: 60
-      start_period: 120s
+      retries: 10
+      start_period: 30s
     restart: unless-stopped
 
 volumes:
