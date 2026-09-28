@@ -1,23 +1,23 @@
 ﻿# localmail
 
-一个本地运行的 QQ 邮箱只读客户端。前端使用 Vue 3、TypeScript、Pinia、Element Plus 和 DOMPurify；后端使用 FastAPI，通过 Python 标准库 `imaplib` 连接 `imap.qq.com:993`。
+一个本地运行的 QQ 邮箱AI问答知识库。前端使用 Vue 3、TypeScript、Pinia、Element Plus 和 DOMPurify；后端使用 FastAPI，通过 Python 标准库 `imaplib` 连接 `imap.qq.com:993`。
 
 ## 功能范围
-- 只支持单个 `@qq.com` 邮箱账号。
+- 支持 `@qq.com` 邮箱账号。
 
   ![登录页面](images/login.png)
 
-- 只读取”收件箱”，首次加载最近 30 封邮件，支持加载更早邮件和手动刷新。
+- 读取”收件箱”，首次加载最近 30 封邮件，支持加载更早邮件和手动刷新。
 
   ![收件箱](images/mail_inbox.png)
 
 - 点击邮件后用 `BODY.PEEK` 读取正文，不修改服务器上的已读状态。
 - 支持纯文本、HTML 和常见 multipart 邮件。
 - HTML 正文经 DOMPurify 清理后放入无脚本权限的 sandbox iframe。
-- AI 问答支持通过本机 Ollama 调用 `qwen2.5:7b-instruct` 进行多轮对话。
+- 邮件知识库索引最近 50 封收件箱邮件，使用 `bge-m3:latest` embedding、Chroma 向量库和 SQLite FTS5 BM25 多路召回，并在检索前做查询规范化、关键词抽取、实体扩写和轻量指代改写，召回后通过 RRF + 规则重排序筛选引用。
+- AI 问答支持通过本机 Ollama 调用 `qwen2.5:7b-instruct` 进行多轮对话，不上传云端保护用户隐私性。
 
   ![AI问答](images/AI_QA.png)
-- 邮件知识库支持索引最近 50 封收件箱邮件，使用 `bge-m3:latest` embedding、Chroma 向量库和 SQLite FTS5 BM25 多路召回，并在检索前做查询规范化、关键词抽取、实体扩写和轻量指代改写，召回后通过 RRF + 规则重排序筛选引用。
 - 不支持发信、SMTP、搜索、删除、移动、附件下载、多账号和离线缓存。
 
 ## 系统要求
